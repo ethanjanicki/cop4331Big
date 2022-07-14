@@ -1,8 +1,8 @@
 import React from 'react';
 
-import PageTitle from '../components/PageTitle';
-import LoggedInName from '../components/LoggedInName';
-import CardUI from '../components/CardUI';
+import PageTitle from '../components/PageTitle.js';
+import LoggedInName from '../components/LoggedInName.js';
+import CardUI from '../components/CardUI.js';
 
 const CardPage = () =>
 {

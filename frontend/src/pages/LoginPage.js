@@ -1,8 +1,8 @@
 import React from 'react';
 
-import PageTitle from '../components/PageTitle';
-import Login from '../components/Login';
-import RegRedirect from '../components/RegRedirect';
+import PageTitle from '../components/PageTitle.js';
+import Login from '../components/Login.js';
+import RegRedirect from '../components/RegRedirect.js';
 
 const LoginPage = () =>
 {

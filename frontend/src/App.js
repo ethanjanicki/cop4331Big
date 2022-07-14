@@ -3,9 +3,9 @@ import './App.css';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import LoginPage from './pages/LoginPage';
-import RegPage from './pages/RegPage';
-import CardPage from './pages/CardPage';
+import LoginPage from './pages/LoginPage.js';
+import RegPage from './pages/RegPage.js';
+import CardPage from './pages/CardPage.js';
 
 function App() {
   return (
