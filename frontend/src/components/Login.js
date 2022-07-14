@@ -28,8 +28,7 @@ function Login()
         try
         {    
             const response = await fetch(buildPath('api/login'),
-                {method:'POST',body:js,headers:{'Content-Type': 
-'application/json'}});
+                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
             let res = JSON.parse(await response.text());
             if( res.id <= 0 )
             {
@@ -37,8 +36,7 @@ function Login()
             }
             else
             {
-                let user = 
-{firstName:res.firstName,lastName:res.lastName,id:res.id}
+                let user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
                 localStorage.setItem('user_data', JSON.stringify(user));
                 setMessage('');
                 window.location.href = '/cards';
@@ -54,12 +52,11 @@ function Login()
     return(
       <div id="loginDiv">
         <form onSubmit={doLogin}>
-        <span id="inner-title">PLEASE LOG IN</span><br />
-        <input type="text" id="loginName" placeholder="Username" 
+        <input type="text" className="loginText" id="loginName" placeholder="Username" 
           ref={(c) => loginName = c} /> <br />
-        <input type="password" id="loginPassword" placeholder="Password" 
+        <input type="password" className="loginText" id="loginPassword" placeholder="Password" 
           ref={(c) => loginPassword = c} /> <br />
-        <input type="submit" id="loginButton" class="buttons" value = "Do It" onClick={doLogin} />
+        <input type="submit" id="loginButton" className="buttons" value = "Log In" onClick={doLogin} />
         </form>
         <span id="loginResult">{message}</span>
      </div>
