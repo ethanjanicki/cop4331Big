@@ -1,0 +1,185 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Hind";
+}
+
+html {
+    background: #EEEEEE;
+}
+
+h1 {
+    margin-top: 3%;
+    text-align:center;
+}
+
+#loginDiv {
+    text-align:center;
+    background: #FFCC00;
+    border: 1px solid black;
+    margin: 0 auto;
+    margin-top: 7%;
+    width: 60%;
+    line-height: 200%;
+    box-shadow: 5px 7px 5px rgba(0, 0, 0, 0.20);
+}
+
+#registerDiv {
+    text-align:center;
+    background: #FFCC00;
+    border: 1px solid black;
+    margin: 0 auto;
+    margin-top: 5%;
+    width: 60%;
+    line-height: 200%;
+    box-shadow: 5px 7px 5px rgba(0, 0, 0, 0.20);
+}
+
+#regRedirectDiv {
+    text-align:center;
+    background: #000000;
+    margin-top: 1%;
+}
+
+#loginRedirectDiv {
+    text-align:center;
+    background: #000000;
+    margin-top: 1%;
+}
+
+.loginText {
+    margin-top: 5%;
+    border:0px none;
+    border-radius: 0px;
+    outline: none;
+    box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.20);
+    padding: 1%;
+    width:50%;
+    height:30px;
+    font-size: 150%;
+}
+
+.regText {
+    margin-top: 5%;
+    margin: 2%;
+    border:0px none;
+    border-radius: 0px;
+    outline: none;
+    box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.20);
+    padding: 1%;
+    width:30%;
+    height:30px;
+    font-size: 150%;
+}
+
+#loginButton {
+    margin: 3%;
+    margin-top: 8%;
+    background: #BB9A38;
+    box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.20);
+}
+
+#loginButton:hover {
+    background-color: #bbb39e;
+}
+
+#regRedirectButton {
+    margin: 3%;
+    background: #FFCC00;
+}
+
+#regRedirectButton:hover {
+    background-color: #ffeca0;
+}
+
+#loginRedirectButton {
+    margin: 3%;
+    background: #FFCC00;
+}
+
+#loginRedirectButton:hover {
+    background-color: #ffeca0;
+}
+
+#loginResult {
+    font-size: 150%;
+    padding-left: 3%;
+    padding-right: 3%;
+    color: #DD1C1A;
+    text-shadow: 2px 2px 2px white;
+}
+
+.buttons {
+    font-size: 150%;
+    padding-left: 5%;
+    padding-right: 5%;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.nav ul {
+    margin: 0;
+}
+
+.nav li {
+    display: inline;
+}
+
+.nav a {
+    display: inline-block;
+    padding: 0.5%;
+    padding-left: 13%;
+    padding-right: 13%;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.nav a:hover {
+    background-color: rgba(255, 255, 255, .3);
+}
+
+.main-nav {
+    text-align: center;
+    font-size: 200%;
+    font-weight: lighter;
+    border-bottom: 1px solid rgba(255, 255, 255, .3);
+    background: black;
+}
+
+.main-nav li {
+    padding: 0 0%;
+}
+
+#listBar {
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+}
+
+#mapBar {
+    border-left: 2px solid white;
+    border-right: 1px solid white;
+}
+
+#profileBar {
+    border-left: 1px solid white;
+    border-right: 2px solid white;
+}
+
+#profileInfoDiv {
+    text-align: center;
+    font-size: 250%;
+    margin-top: 2%;
+}
+
+#logoutButton {
+    background: #DD1C1A;
+    color: white;
+    font-size: 100%;
+    margin-left: 2%;
+}
+
+#logoutButton:hover {
+    background-color: #dda5a4;
+    color: black;
+}

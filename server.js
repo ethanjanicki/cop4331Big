@@ -14,6 +14,7 @@ require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
 const url = process.env.MONGODB_URI;
 const client = new MongoClient(url);
+const crypto = require('crypto');
 client.connect();
 
 app.post('/api/login', async (req, res, next) => 
@@ -22,7 +23,7 @@ app.post('/api/login', async (req, res, next) =>
   // outgoing: id, firstName, lastName, error
   let error = '';
   const { login, password } = req.body;
-  const db = client.db("COP43310-Summer22-2");
+  const db = client.db("Review_App");
   const results = await 
 db.collection('Users').find({login:login,password:password}).toArray();
   let id = -1;
@@ -38,15 +39,17 @@ db.collection('Users').find({login:login,password:password}).toArray();
   res.status(200).json(ret);
 });
 
-
-app.post('/api/registerUser', async (req, res, next) =>
+/*app.post('/api/registerUser', async (req, res, next) =>
 {
   // incoming: first_name, last_name, login, password, email
   // outgoing: error
 	
-  const { first_name,last_name,login,password,email } = req.body;
+  const { first_name,last_name,login,password,email,isVerified,emailToken } = req.body;
 
-  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email};
+  isVerified=false;
+  emailToken=crypto.randomBytes(64).toString('hex');
+
+  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email,isVerified:isVerified,emailToken:emailToken};
   let error = '';
 
   try
@@ -65,6 +68,118 @@ app.post('/api/registerUser', async (req, res, next) =>
   res.status(200).json(ret);
 });
 
+app.post('/api/sendemail', async (req, res, next) =>
+{
+  // incoming: first_name, last_name, login, password, email
+  // outgoing: error
+	
+  const { first_name,last_name,login,password,email } = req.body;
+
+  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email};
+  let error = '';
+
+  try
+  {
+    require('dotenv').config()
+    const sgMail = require('@sendgrid/mail')
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+      const msg = {
+        to: 'kduvall011@gmail.com', // Change to your recipient
+        from: 'cop4331group18@gmail.com', // Change to your verified sender
+        subject: 'Sending with SendGrid is Fun',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+      }
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log('Email sent')
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  //cardList.push( card );
+
+  let ret = { error: error };
+  res.status(200).json(ret);
+});
+*/
+
+app.post('/api/registerUser', async (req, res, next) =>
+{
+  // incoming: first_name, last_name, login, password, email
+  // outgoing: error
+	
+  const { first_name,last_name,login,password,email } = req.body;
+
+  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email};
+  let error = '';
+
+  try
+  {
+    const db = client.db("Review_App");
+    const result = db.collection('Users').insertOne(newUser);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  //cardList.push( card );
+
+  let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+app.post('/api/sendemail', async (req, res, next) =>
+{
+  // incoming: first_name, last_name, login, password, email
+  // outgoing: error
+	
+  const { first_name,last_name,login,password,email } = req.body;
+
+  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email};
+  let error = '';
+
+  try
+  {
+    require('dotenv').config()
+    const sgMail = require('@sendgrid/mail')
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+      const msg = {
+        to: 'kduvall011@gmail.com', // Change to your recipient
+        from: 'cop4331group18@gmail.com', // Change to your verified sender
+        subject: 'Sending with SendGrid is Fun',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+      }
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log('Email sent')
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  //cardList.push( card );
+
+  let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+
 
 app.post('/api/addcard', async (req, res, next) =>
 {
@@ -75,7 +190,7 @@ app.post('/api/addcard', async (req, res, next) =>
   let error = '';
   try
   {
-    const db = client.db("COP43310-Summer22-2");
+    const db = client.db("Review_App");
     const result = db.collection('Cards').insertOne(newCard);
   }
   catch(e)
@@ -95,7 +210,7 @@ app.post('/api/searchcards', async (req, res, next) =>
   const { user_id, search } = req.body;
   let _search = search.trim();
   
-  const db = client.db("COP43310-Summer22-2");
+  const db = client.db("Review_App");
   const results = await db.collection('Cards').find({"Card":{$regex:_search+'.*', $options:'r'}}).toArray();
   
   let _ret = [];

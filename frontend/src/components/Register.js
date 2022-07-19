@@ -33,7 +33,7 @@ function Register()
         }
 
 
-        else if(email.value!=confirm_email.value)
+        else if(email.value!==confirm_email.value)
         {
             setMessage('Emails must match');
         }
@@ -63,19 +63,28 @@ function Register()
             }    
         }
     };
+
+    const doLoginRedirect = async event => 
+    {
+        window.location.href = '/';  
+    };
     
     return(
       <div id="registerDiv">
+        <h1 id="title">UCF Shoutout</h1>
         <form onSubmit={doRegister}>
-        <input type="text" className="loginText" id="firstName" placeholder="First Name" ref={(c) => first_name = c} /> <br />
-        <input type="text" className="loginText" id="lastName" placeholder="Last Name" ref={(c) => last_name = c} /> <br />
-        <input type="text" className="loginText" id="regName" placeholder="Username" ref={(c) => loginName = c} /> <br />
-        <input type="password" className="loginText" id="regPassword" placeholder="Password" ref={(c) => loginPassword = c} /> <br />
-        <input type="text" className="loginText" id="regEmail" placeholder="Email" ref={(c) => email = c} /> <br />
-        <input type="text" className="loginText" id="regConfirmEmail" placeholder="Confirm Email" ref={(c) => confirm_email = c} /> <br />
+        <input type="text" className="regText" id="firstName" placeholder="First Name" ref={(c) => first_name = c} /> 
+        <input type="text" className="regText" id="lastName" placeholder="Last Name" ref={(c) => last_name = c} /> <br />
+        <input type="text" className="regText" id="regName" placeholder="Username" ref={(c) => loginName = c} /> 
+        <input type="password" className="regText" id="regPassword" placeholder="Password" ref={(c) => loginPassword = c} /> <br />
+        <input type="text" className="regText" id="regEmail" placeholder="Email" ref={(c) => email = c} /> 
+        <input type="text" className="regText" id="regConfirmEmail" placeholder="Confirm Email" ref={(c) => confirm_email = c} /> <br />
         <input type="submit" id="loginButton" className="buttons" value = "Register" onClick={doRegister} />
         </form>
         <span id="loginResult">{message}</span>
+        <div id="loginRedirectDiv">
+            <input type="button" id="loginRedirectButton" className="buttons" value = "Have an account? Log in here!" onClick={doLoginRedirect} />
+        </div>
      </div>
     );
 };
