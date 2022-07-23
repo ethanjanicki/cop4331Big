@@ -179,6 +179,119 @@ app.post('/api/sendemail', async (req, res, next) =>
   res.status(200).json(ret);
 });
 
+app.post('/api/searchlocations', async (req, res, next) => 
+{
+  // incoming: userId, search
+  // outgoing: results[], error
+
+  let error = '';
+
+  const { search } = req.body;
+
+  let _search = search.trim();
+  
+  const db = client.db("Review_App");
+  const results = await db.collection('locations').find({"name":{$regex:_search+'.*', $options:'r'}}).toArray();
+  
+  let _ret = [];
+  for( var i=0; i<results.length; i++ )
+  {
+    _ret.push( results[i].name );
+  }
+  
+  let ret = {results:_ret, error:error};
+  res.status(200).json(ret);
+});
+
+app.post('/api/addReview', async (req, res, next) =>
+{
+  // incoming: userId, color
+  // outgoing: error
+	
+  const { user_id, location_id, review } = req.body;
+
+  const newReview = {user_id:user_id,location_id:location_id,review:review};
+  let error = '';
+
+  try
+  {
+    const db = client.db("Review_App");
+    const result = db.collection('Reviews').insertOne(newReview);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  //cardList.push( card );
+
+  let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+
+//functional maybe
+app.post('/api/deleteReview', async (req, res, next) =>
+{
+  // incoming: userId, review
+  // outgoing: error
+	
+  const {review} = req.body;
+  let error = '';
+  //const newReview = {user_id:user_id,location_id:location_id,review:review};
+  const db = client.db("Review_App");
+  try
+  {
+    
+    const result = db.collection('Reviews').deleteOne({review:review});
+  }
+  catch(e)
+  {
+    error = e.toString
+  }
+
+  const results = await db.collection('Reviews').find({user_id:user_id}).toArray();
+  
+  let _ret = [];
+  for( var i=0; i<results.length; i++ )
+  {
+    _ret.push( results[i].review );
+  }
+  
+  let ret = {results:_ret, error:error};
+  
+  //let error = '';
+  //let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+
+//functional
+app.post('/api/reviewsforLocation', async (req, res, next) =>
+{
+  // incoming: userId, review
+  // outgoing: error
+	
+  const {location_id} = req.body;
+  let error = '';
+  //const newReview = {user_id:user_id,location_id:location_id,review:review};
+  const db = client.db("Review_App");
+  
+  const results = await db.collection('Reviews').find({location_id:location_id}).toArray();
+  
+  let _ret = [];
+  for( var i=0; i<results.length; i++ )
+  {
+    _ret.push( results[i].review );
+  }
+  
+  let ret = {results:_ret, error:error};
+  
+  //let error = '';
+  //let ret = { error: error };
+  res.status(200).json(ret);
+});
+
 
 
 app.post('/api/addcard', async (req, res, next) =>
@@ -199,6 +312,57 @@ app.post('/api/addcard', async (req, res, next) =>
   }
   //cardList.push( card );
   let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+app.post('/api/userreviews', async (req, res, next) =>
+{
+  // incoming: userId, review
+  // outgoing: error
+	
+  const {user_id} = req.body;
+  let error = '';
+  //const newReview = {user_id:user_id,location_id:location_id,review:review};
+  const db = client.db("Review_App");
+  
+  const results = await db.collection('Reviews').find({user_id:user_id}).toArray();
+  
+  let _ret = [];
+  for( var i=0; i<results.length; i++ )
+  {
+    let temp={location_id:results[i].location_id,review:results[i].review};
+    _ret.push( temp );
+  }
+  
+  let ret = {results:_ret, error:error};
+  
+  //let error = '';
+  //let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+app.post('/api/nameofLocation', async (req, res, next) =>
+{
+  // incoming: userId, review
+  // outgoing: error
+	
+  const {location_id} = req.body;
+  let error = '';
+  //const newReview = {user_id:user_id,location_id:location_id,review:review};
+  const db = client.db("Review_App");
+  
+  const results = await db.collection('locations').find({location_id:location_id}).toArray();
+  
+  let _ret = [];
+  for( var i=0; i<results.length; i++ )
+  {
+    _ret.push( results[i].name );
+  }
+  
+  let ret = {results:_ret, error:error};
+  
+  //let error = '';
+  //let ret = { error: error };
   res.status(200).json(ret);
 });
 
