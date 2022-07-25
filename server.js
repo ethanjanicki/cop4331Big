@@ -203,6 +203,55 @@ app.post('/api/searchlocations', async (req, res, next) =>
   res.status(200).json(ret);
 });
 
+app.post('/api/searchReviews', async (req, res, next) => 
+{
+  // incoming: search
+  // outgoing: results[], error
+
+  let error = '';
+
+  const { search } = req.body;
+
+  let _search = search.trim();
+  
+  const db = client.db("Review_App");
+  const results = await db.collection('Reviews').find({"location":{$regex:_search+'.*', $options:'r'}}).toArray();
+  
+  let _ret = [];
+  for( var i=0; i<results.length; i++ )
+  {
+    let temp={location:results[i].location,review:results[i].review,user_id:results[i].user_id};
+    _ret.push( temp );
+  }
+  
+  let ret = {results:_ret, error:error};
+  res.status(200).json(ret);
+});
+
+app.post('/api/searchUsers', async (req, res, next) => 
+{
+  // incoming: login, password
+  // outgoing: id, firstName, lastName, error
+  const {user_id} = req.body;
+  let error = '';
+  const db = client.db("Review_App");
+  
+  const results = await db.collection('Users').find({user_id:user_id}).toArray();
+  
+  let _ret = [];
+  for( var i=0; i<results.length; i++ )
+  {
+    let temp={first_name:results[i].first_name,last_name:results[i].last_name};
+    _ret.push( temp );
+  }
+  
+  let ret = {results:_ret, error:error};
+  
+  //let error = '';
+  //let ret = { error: error };
+  res.status(200).json(ret);
+});
+
 app.post('/api/addReview', async (req, res, next) =>
 {
   // incoming: userId, color
@@ -236,14 +285,14 @@ app.post('/api/deleteReview', async (req, res, next) =>
   // incoming: userId, review
   // outgoing: error
 	
-  const {review} = req.body;
+  const {user_id,review_id} = req.body;
   let error = '';
   //const newReview = {user_id:user_id,location_id:location_id,review:review};
   const db = client.db("Review_App");
   try
   {
     
-    const result = db.collection('Reviews').deleteOne({review:review});
+    const result = db.collection('Reviews').deleteOne({review_id:review_id});
   }
   catch(e)
   {
@@ -255,7 +304,8 @@ app.post('/api/deleteReview', async (req, res, next) =>
   let _ret = [];
   for( var i=0; i<results.length; i++ )
   {
-    _ret.push( results[i].review );
+    let temp={location:results[i].location,review:results[i].review,review_id:results[i].review_id};
+    _ret.push( temp );
   }
   
   let ret = {results:_ret, error:error};
@@ -330,7 +380,7 @@ app.post('/api/userreviews', async (req, res, next) =>
   let _ret = [];
   for( var i=0; i<results.length; i++ )
   {
-    let temp={location_id:results[i].location_id,review:results[i].review};
+    let temp={location:results[i].location,review:results[i].review,review_id:results[i].review_id};
     _ret.push( temp );
   }
   

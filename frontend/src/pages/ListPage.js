@@ -1,6 +1,7 @@
 import React from 'react';
 
 import NavBar from '../components/NavBar.js';
+import ListSearch from '../components/ListSearch.js';
 
 const ListPage = () =>
 {
@@ -8,6 +9,7 @@ const ListPage = () =>
       <div id="listBox">
 
         <NavBar />
+        <ListSearch />
 
       </div>
     );
