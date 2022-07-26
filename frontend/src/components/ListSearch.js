@@ -99,7 +99,7 @@ function ListSearch()
     return(
         <div id="listSearchDiv">
             <form id="loginForm" onSubmit={doSearch}>
-            <input type="text" className="searchText" id="search" placeholder="Search Reviews" ref={(c) => searchQuery = c} /> <br />
+            <input type="text" className="searchText" id="search" placeholder="Search Locations" ref={(c) => searchQuery = c} /> <br />
             <input type="submit" id="searchButton" className="buttons" value = "Search" onClick={doSearch} />
             </form>
 

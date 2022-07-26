@@ -9,6 +9,7 @@ const MapPage = () =>
       <div id="mapBox">
 
         <NavBar />
+        <MapScreen />
 
       </div>
     );

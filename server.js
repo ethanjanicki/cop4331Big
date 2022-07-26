@@ -252,14 +252,44 @@ app.post('/api/searchUsers', async (req, res, next) =>
   res.status(200).json(ret);
 });
 
+app.post('/api/reviewsforspecificLocation', async (req, res, next) =>
+{
+  const {location} = req.body;
+  let error = '';
+
+  const db = client.db("Review_App");
+
+  const results = await db.collection('Reviews').find({location:location}).toArray();
+
+  let ret = {results:results, error:error};
+
+  res.status(200).json(ret);
+});
+
+app.post('/api/namefromid', async (req, res, next) =>
+{
+
+  const {user_id} = req.body;
+  let error = '';
+
+  const db = client.db("Review_App");
+
+  const results = await db.collection('Users').find({user_id:user_id}).toArray();
+
+
+  let ret = {results:results, error:error};
+
+  res.status(200).json(ret);
+});
+
 app.post('/api/addReview', async (req, res, next) =>
 {
   // incoming: userId, color
   // outgoing: error
 	
-  const { user_id, location_id, review } = req.body;
+  const { user_id, location, review } = req.body;
 
-  const newReview = {user_id:user_id,location_id:location_id,review:review};
+  const newReview = {user_id:user_id,location:location,review:review};
   let error = '';
 
   try

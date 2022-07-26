@@ -129,8 +129,8 @@ h1 {
 .nav a {
     display: inline-block;
     padding: 0.5%;
-    padding-left: 13%;
-    padding-right: 13%;
+    padding-left: 12%;
+    padding-right: 12%;
     color: white;
     text-decoration: none;
     cursor: pointer;
@@ -275,6 +275,10 @@ tr {
     font-size: 200%;
 }
 
+#searchButton:hover {
+    background-color: #ffeca0;
+}
+
 .searchResultTable {
     margin-left:auto; 
     margin-right:auto;
@@ -318,4 +322,51 @@ tr {
 
 .searchOverrideTop {
     padding-top: 2%;
+}
+
+#mapScreenDiv {
+    text-align:center;
+}
+
+#showLocationsButton {
+    background: #FFCC00;
+    margin-top: 3%;
+    margin-bottom: 2%;
+    font-size: 200%;
+}
+
+#showLocationsButton:hover {
+    background-color: #ffeca0;
+}
+
+.searchResultTable {
+    text-align: center;
+    width: 30%;
+}
+
+.showRevBut {
+    background: #FFCC00;
+}
+
+.showRevBut:hover {
+    background-color: #ffeca0;
+}
+
+.writeRevBut {
+    background: #2D7DD2;
+    color: white;
+    padding-left: 4%;
+    padding-right: 4%;
+}
+
+.writeRevBut:hover {
+    background: #72a0d1;
+}
+
+.bigTextBox {
+    background: white;
+    font-size: 100%;
+    width: 80%;
+    height: 150px;
+    padding: 1%;
 }
