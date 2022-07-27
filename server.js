@@ -29,6 +29,7 @@ db.collection('Users').find({login:login,password:password}).toArray();
   let id = -1;
   let fn = '';
   let ln = '';
+  let iv = '';
   if( results.length > 0 )
   {
     id = results[0].user_id;
@@ -153,17 +154,17 @@ app.post('/api/verifyAccount', async (req, res, next) =>
     ret = {good:false, error:'Code is incorrect'};
   }
   else {
-    for( var i=0; i<results.length; i++ )
-  {
-    let tempId = results[i].user_id;
-    let tempFirst = results[i].first_name;
-    let tempLast = results[i].last_name;
-    let tempLogin = results[i].login;
-    let tempPass = results[i].password;
-    let tempEmail = results[i].email;
-    let tempCode = results[i].verCode;
+    
+    let tempId = results[0].user_id;
+    let tempFirst = results[0].first_name;
+    let tempLast = results[0].last_name;
+    let tempLogin = results[0].login;
+    let tempPass = results[0].password;
+    let tempEmail = results[0].email;
+    let tempCode = results[0].verCode;
+    let tempPassCode = results[0].passCode;
 
-    const newUser= {user_id:tempId,first_name:tempFirst,last_name:tempLast,login:tempLogin,password:tempPass,email:tempEmail,isVerified:true,verCode:tempCode};
+    const newUser= {user_id:tempId,first_name:tempFirst,last_name:tempLast,login:tempLogin,password:tempPass,email:tempEmail,isVerified:true,verCode:tempCode,passCode:tempPassCode};
 
 
     try
@@ -175,7 +176,51 @@ app.post('/api/verifyAccount', async (req, res, next) =>
     {
       error = e.toString;
     }
+  
+  
+  ret = {good:true, error:error};
   }
+  res.status(200).json(ret);
+});
+
+app.post('/api/passwordReset', async (req, res, next) =>
+{
+  let error = '';
+
+  const { passCode, newPass } = req.body;
+  
+  const db = client.db("Review_App");
+  const results = await db.collection('Users').find({passCode:passCode}).toArray();
+  let ret = {};
+  
+  if(results.length < 1)
+  {
+    ret = {good:false, error:'Code is incorrect'};
+  }
+  else {
+    
+    let tempId = results[0].user_id;
+    let tempFirst = results[0].first_name;
+    let tempLast = results[0].last_name;
+    let tempLogin = results[0].login;
+    let tempPass = newPass;
+    let tempEmail = results[0].email;
+    let tempCode = results[0].verCode;
+    let tempPassCode = results[0].passCode;
+
+    const newUser= {user_id:tempId,first_name:tempFirst,last_name:tempLast,login:tempLogin,password:tempPass,email:tempEmail,isVerified:true,verCode:tempCode,passCode:tempPassCode};
+
+
+    try
+    {
+      const result = db.collection('Users').deleteOne({passCode:passCode});
+      const result2 = db.collection('Users').insertOne(newUser);
+    }
+    catch(e)
+    {
+      error = e.toString;
+    }
+  
   
   ret = {good:true, error:error};
   }
@@ -223,51 +268,83 @@ app.post('/api/registerUserNew', async (req, res, next) =>
   // outgoing: error
 	
   const { first_name,last_name,login,password,email } = req.body;
+  let error = '';
+  const db = client.db("Review_App");
+
+
+  const results1 = await db.collection('Users').find({login:login}).toArray();
+  const results2 = await db.collection('Users').find({email:email}).toArray();
+
+
+
 
   let verCode = 10000 + Math.floor(Math.random() * (99999 - 10000));
+  let passCode = 10000 + Math.floor(Math.random() * (99999 - 10000));
 
-  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email,isVerified:false,verCode:verCode};
-  let error = '';
+  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email,isVerified:false,verCode:verCode,passCode:passCode};
+  let bingo = true;
 
-  try
+  if( results1.length > 0 )
   {
-    const db = client.db("Review_App");
-    const result = db.collection('Users').insertOne(newUser);
-  }
-  catch(e)
-  {
-    error = e.toString();
+    error = 'Username already in use';
+    bingo = false;
   }
 
-  try
+  if( results2.length > 0 )
   {
-    require('dotenv').config()
-    const sgMail = require('@sendgrid/mail')
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-      const msg = {
-        to: email, // Change to your recipient
-        from: 'cop4331group18@gmail.com', // Change to your verified sender
-        subject: 'UCF Shoutout Account Verification',
-        text: 'Your verification code is: ' + verCode,
-        html: '<strong>Your verification code is: ' + verCode + '</strong>',
-      }
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log('Email sent')
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+    error = 'Email already in use';
+    bingo = false;
   }
-  catch(e)
+
+  if( results2.length > 0 && results1.length > 0)
   {
-    error = e.toString();
+    error = 'Username and Email already in use';
+    bingo = false;
+  }
+
+
+
+  if(bingo)
+  {
+    try
+    {
+      const result = db.collection('Users').insertOne(newUser);
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+
+    try
+    {
+      require('dotenv').config()
+      const sgMail = require('@sendgrid/mail')
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+        const msg = {
+          to: email, // Change to your recipient
+          from: 'cop4331group18@gmail.com', // Change to your verified sender
+          subject: 'UCF Shoutout Account Verification',
+          text: 'Your verification code is: ' + verCode,
+          html: '<strong>Your verification code is: ' + verCode + '</strong>',
+        }
+        sgMail
+          .send(msg)
+          .then(() => {
+            console.log('Email sent')
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
   }
 
   //cardList.push( card );
 
-  let ret = { error: error };
+  let ret = { bingo: bingo, error: error };
   res.status(200).json(ret);
 });
 
@@ -413,6 +490,57 @@ app.post('/api/namefromid', async (req, res, next) =>
 
 
   let ret = {results:results, error:error};
+
+  res.status(200).json(ret);
+});
+
+app.post('/api/sendResetEmail', async (req, res, next) =>
+{
+
+  const {email} = req.body;
+  let error = '';
+  let exists = true;
+
+  const db = client.db("Review_App");
+
+  const results = await db.collection('Users').find({email:email}).toArray();
+
+  if(results.length < 1)
+  {
+    error = 'No account exists with this email';
+    exists = false;
+  }
+  else
+  {
+    try
+    {
+      require('dotenv').config()
+      const sgMail = require('@sendgrid/mail')
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+        const msg = {
+          to: email, // Change to your recipient
+          from: 'cop4331group18@gmail.com', // Change to your verified sender
+          subject: 'UCF Shoutout Account Verification',
+          text: 'Your password reset code is: ' + results[0].passCode,
+          html: '<strong>Your password reset code is: ' + results[0].passCode + '</strong>',
+        }
+        sgMail
+          .send(msg)
+          .then(() => {
+            console.log('Email sent')
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+  }
+
+
+  let ret = {results:results, exists:exists, error:error};
 
   res.status(200).json(ret);
 });

@@ -58,31 +58,10 @@ function Login()
         window.location.href = '/register';  
     };
 
-    /*const doEmail = async event =>
+    const doResetRedirect = async event => 
     {
-      event.preventDefault();
-      let obj = {login:loginName.value,password:loginPassword.value};
-        let js = JSON.stringify(obj);
-      try
-        {    
-            const response = await fetch(buildPath('api/sendemail'),
-                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-            let res = JSON.parse(await response.text());
-            if( res.id <= 0 )
-            {
-                setMessage('Email failure?');
-            }
-            else
-            {
-                setMessage('Email success?');
-            }
-        }
-        catch(e)
-        {
-            alert(e.toString());
-            return;
-        }
-    }*/
+        window.location.href = '/reset';  
+    };
     
     return(
       <div id="loginDiv">
@@ -92,6 +71,7 @@ function Login()
           ref={(c) => loginName = c} /> <br />
         <input type="password" className="loginText" id="loginPassword" placeholder="Password" 
           ref={(c) => loginPassword = c} /> <br />
+        <input type="submit" id="resetButton" className="buttons" value = "Reset Password" onClick={doResetRedirect} />
         <input type="submit" id="loginButton" className="buttons" value = "Log In" onClick={doLogin} />
         </form>
         <span id="loginResult">{message}</span>

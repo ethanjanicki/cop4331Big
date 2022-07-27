@@ -46,9 +46,9 @@ function Register()
                 const response = await fetch(buildPath('api/registerUserNew'),
                     {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
                 let res = JSON.parse(await response.text());
-                if( res.id <= 0 )
+                if( !res.bingo )
                 {
-                    setMessage('Failure');
+                    setMessage(res.error);
                 }
                 else
                 {

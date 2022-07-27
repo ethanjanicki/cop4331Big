@@ -10,6 +10,8 @@ import ProfilePage from './pages/ProfilePage';
 import ListPage from './pages/ListPage';
 import MapPage from './pages/MapPage';
 import VerifyPage from './pages/VerifyPage';
+import ResetPage from './pages/ResetPage';
+import ResetSentPage from './pages/ResetSentPage';
 //import CardPage from './pages/CardPage.js';
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
       <Route path="/list" index element={<ListPage />} />
       <Route path="/map" index element={<MapPage />} />
       <Route path="/verify" index element={<VerifyPage />} />
+      <Route path="/reset" index element={<ResetPage />} />
+      <Route path="/resetsent" index element={<ResetSentPage />} />
 
     </Routes>
   </BrowserRouter>

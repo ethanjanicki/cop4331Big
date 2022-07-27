@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Register from '../components/Register.js';
 import VerifyWindow from '../components/VerifyWindow.js';
 
 

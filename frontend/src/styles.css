@@ -83,6 +83,18 @@ h1 {
     background-color: #bbb39e;
 }
 
+#resetButton {
+    margin: 3%;
+    margin-top: 8%;
+    background: #DD1C1A;
+    color: white;
+    box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.20);
+}
+
+#resetButton:hover {
+    background-color: #dda5a4;
+}
+
 #regRedirectButton {
     margin: 3%;
     background: #FFCC00;
