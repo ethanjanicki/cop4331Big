@@ -71,7 +71,7 @@ function Login()
           ref={(c) => loginName = c} /> <br />
         <input type="password" className="loginText" id="loginPassword" placeholder="Password" 
           ref={(c) => loginPassword = c} /> <br />
-        <input type="submit" id="resetButton" className="buttons" value = "Reset Password" onClick={doResetRedirect} />
+        <input type="button" id="resetButton" className="buttons" value = "Reset Password" onClick={doResetRedirect} />
         <input type="submit" id="loginButton" className="buttons" value = "Log In" onClick={doLogin} />
         </form>
         <span id="loginResult">{message}</span>
