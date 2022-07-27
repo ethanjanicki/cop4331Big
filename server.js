@@ -34,8 +34,9 @@ db.collection('Users').find({login:login,password:password}).toArray();
     id = results[0].user_id;
     fn = results[0].first_name;
     ln = results[0].last_name;
+    iv = results[0].isVerified;
   }
-  let ret = { id:id, firstName:fn, lastName:ln, error:''};
+  let ret = { id:id, firstName:fn, lastName:ln, isVerified:iv, error:''};
   res.status(200).json(ret);
 });
 
@@ -137,7 +138,140 @@ app.post('/api/registerUser', async (req, res, next) =>
   res.status(200).json(ret);
 });
 
-app.post('/api/sendemail', async (req, res, next) =>
+app.post('/api/verifyAccount', async (req, res, next) =>
+{
+  let error = '';
+
+  const { verCode } = req.body;
+  
+  const db = client.db("Review_App");
+  const results = await db.collection('Users').find({verCode:verCode}).toArray();
+  let ret = {};
+  
+  if(results.length < 1)
+  {
+    ret = {good:false, error:'Code is incorrect'};
+  }
+  else {
+    for( var i=0; i<results.length; i++ )
+  {
+    let tempId = results[i].user_id;
+    let tempFirst = results[i].first_name;
+    let tempLast = results[i].last_name;
+    let tempLogin = results[i].login;
+    let tempPass = results[i].password;
+    let tempEmail = results[i].email;
+    let tempCode = results[i].verCode;
+
+    const newUser= {user_id:tempId,first_name:tempFirst,last_name:tempLast,login:tempLogin,password:tempPass,email:tempEmail,isVerified:true,verCode:tempCode};
+
+
+    try
+    {
+      const result = db.collection('Users').deleteOne({verCode:verCode});
+      const result2 = db.collection('Users').insertOne(newUser);
+    }
+    catch(e)
+    {
+      error = e.toString;
+    }
+  }
+  
+  ret = {good:true, error:error};
+  }
+  res.status(200).json(ret);
+});
+
+app.post('/api/deleteReview', async (req, res, next) =>
+{
+  // incoming: userId, review
+  // outgoing: error
+	
+  const {user_id,review_id} = req.body;
+  let error = '';
+  //const newReview = {user_id:user_id,location_id:location_id,review:review};
+  const db = client.db("Review_App");
+  try
+  {
+    
+    const result = db.collection('Reviews').deleteOne({review_id:review_id});
+  }
+  catch(e)
+  {
+    error = e.toString;
+  }
+
+  const results = await db.collection('Reviews').find({user_id:user_id}).toArray();
+  
+  let _ret = [];
+  for( var i=0; i<results.length; i++ )
+  {
+    let temp={location:results[i].location,review:results[i].review,review_id:results[i].review_id};
+    _ret.push( temp );
+  }
+  
+  let ret = {results:_ret, error:error};
+  
+  //let error = '';
+  //let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+app.post('/api/registerUserNew', async (req, res, next) =>
+{
+  // incoming: first_name, last_name, login, password, email
+  // outgoing: error
+	
+  const { first_name,last_name,login,password,email } = req.body;
+
+  let verCode = 10000 + Math.floor(Math.random() * (99999 - 10000));
+
+  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email,isVerified:false,verCode:verCode};
+  let error = '';
+
+  try
+  {
+    const db = client.db("Review_App");
+    const result = db.collection('Users').insertOne(newUser);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  try
+  {
+    require('dotenv').config()
+    const sgMail = require('@sendgrid/mail')
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+      const msg = {
+        to: email, // Change to your recipient
+        from: 'cop4331group18@gmail.com', // Change to your verified sender
+        subject: 'UCF Shoutout Account Verification',
+        text: 'Your verification code is: ' + verCode,
+        html: '<strong>Your verification code is: ' + verCode + '</strong>',
+      }
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log('Email sent')
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  //cardList.push( card );
+
+  let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+/*app.post('/api/sendemail', async (req, res, next) =>
 {
   // incoming: first_name, last_name, login, password, email
   // outgoing: error
@@ -178,6 +312,7 @@ app.post('/api/sendemail', async (req, res, next) =>
   let ret = { error: error };
   res.status(200).json(ret);
 });
+*/
 
 app.post('/api/searchlocations', async (req, res, next) => 
 {
@@ -309,41 +444,6 @@ app.post('/api/addReview', async (req, res, next) =>
 });
 
 
-//functional maybe
-app.post('/api/deleteReview', async (req, res, next) =>
-{
-  // incoming: userId, review
-  // outgoing: error
-	
-  const {user_id,review_id} = req.body;
-  let error = '';
-  //const newReview = {user_id:user_id,location_id:location_id,review:review};
-  const db = client.db("Review_App");
-  try
-  {
-    
-    const result = db.collection('Reviews').deleteOne({review_id:review_id});
-  }
-  catch(e)
-  {
-    error = e.toString
-  }
-
-  const results = await db.collection('Reviews').find({user_id:user_id}).toArray();
-  
-  let _ret = [];
-  for( var i=0; i<results.length; i++ )
-  {
-    let temp={location:results[i].location,review:results[i].review,review_id:results[i].review_id};
-    _ret.push( temp );
-  }
-  
-  let ret = {results:_ret, error:error};
-  
-  //let error = '';
-  //let ret = { error: error };
-  res.status(200).json(ret);
-});
 
 
 //functional

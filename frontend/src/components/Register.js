@@ -43,7 +43,7 @@ function Register()
             let js = JSON.stringify(obj);
             try
             {    
-                const response = await fetch(buildPath('api/registerUser'),
+                const response = await fetch(buildPath('api/registerUserNew'),
                     {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
                 let res = JSON.parse(await response.text());
                 if( res.id <= 0 )
@@ -53,7 +53,7 @@ function Register()
                 else
                 {
                     setMessage('');
-                    window.location.href = '/';
+                    window.location.href = '/verify';
                 }
             }
             catch(e)

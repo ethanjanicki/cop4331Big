@@ -34,6 +34,10 @@ function Login()
             {
                 setMessage('User/Password combination incorrect');
             }
+            else if(!res.isVerified) 
+            {
+                setMessage('Account is not verified');
+            }
             else
             {
                 let user = {firstName:res.firstName,lastName:res.lastName,id:res.id}

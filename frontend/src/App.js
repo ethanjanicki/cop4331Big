@@ -9,6 +9,7 @@ import RegPage from './pages/RegPage';
 import ProfilePage from './pages/ProfilePage';
 import ListPage from './pages/ListPage';
 import MapPage from './pages/MapPage';
+import VerifyPage from './pages/VerifyPage';
 //import CardPage from './pages/CardPage.js';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
       <Route path="/profile" index element={<ProfilePage />} />
       <Route path="/list" index element={<ListPage />} />
       <Route path="/map" index element={<MapPage />} />
+      <Route path="/verify" index element={<VerifyPage />} />
 
     </Routes>
   </BrowserRouter>
