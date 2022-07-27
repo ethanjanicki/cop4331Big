@@ -119,8 +119,9 @@ function MapScreen()
     {
         event.preventDefault();
 
-        let obj = {user_id:userId,location:currentLocationName,review:reviewText};
-        console.log(currentLocationName);
+        let user_name = firstName + " " + lastName;
+
+        let obj = {user_id:userId,user_name:user_name,location:currentLocationName,review:reviewText};
             let js = JSON.stringify(obj);
             try
             {    
@@ -141,7 +142,6 @@ function MapScreen()
     const setCurrentLocationName = (given) =>
     {
         currentLocationName = given;
-        console.log(currentLocationName);
     }
 
     const setToAdd = () =>

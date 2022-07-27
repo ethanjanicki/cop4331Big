@@ -41,78 +41,6 @@ db.collection('Users').find({login:login,password:password}).toArray();
   res.status(200).json(ret);
 });
 
-/*app.post('/api/registerUser', async (req, res, next) =>
-{
-  // incoming: first_name, last_name, login, password, email
-  // outgoing: error
-	
-  const { first_name,last_name,login,password,email,isVerified,emailToken } = req.body;
-
-  isVerified=false;
-  emailToken=crypto.randomBytes(64).toString('hex');
-
-  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email,isVerified:isVerified,emailToken:emailToken};
-  let error = '';
-
-  try
-  {
-    const db = client.db("COP43310-Summer22-2");
-    const result = db.collection('Users').insertOne(newUser);
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
-
-  //cardList.push( card );
-
-  let ret = { error: error };
-  res.status(200).json(ret);
-});
-
-app.post('/api/sendemail', async (req, res, next) =>
-{
-  // incoming: first_name, last_name, login, password, email
-  // outgoing: error
-	
-  const { first_name,last_name,login,password,email } = req.body;
-
-  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email};
-  let error = '';
-
-  try
-  {
-    require('dotenv').config()
-    const sgMail = require('@sendgrid/mail')
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-      const msg = {
-        to: 'kduvall011@gmail.com', // Change to your recipient
-        from: 'cop4331group18@gmail.com', // Change to your verified sender
-        subject: 'Sending with SendGrid is Fun',
-        text: 'and easy to do anywhere, even with Node.js',
-        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-      }
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log('Email sent')
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
-
-  //cardList.push( card );
-
-  let ret = { error: error };
-  res.status(200).json(ret);
-});
-*/
-
 app.post('/api/registerUser', async (req, res, next) =>
 {
   // incoming: first_name, last_name, login, password, email
@@ -225,9 +153,10 @@ app.post('/api/passwordReset', async (req, res, next) =>
         let tempRevId = resultsA[i].review_id;
         let oldLocation = resultsA[i].location;
         let oldReview = resultsA[i].review;
+        let oldName = resultsA[i].user_name;
         const resultB = db.collection('Reviews').deleteOne({review_id:tempRevId});
         
-        const newReview = {user_id:newId,location:oldLocation,review:oldReview};
+        const newReview = {user_id:newId,user_name:oldName,location:oldLocation,review:oldReview};
 
         const resultC = db.collection('Reviews').insertOne(newReview);
 
@@ -402,31 +331,23 @@ app.post('/api/searchtags', async (req, res, next) =>
   const { search } = req.body;
 
   let _search = search.trim();
-
-  console.log('Trimmed');
   
   const db = client.db("Review_App");
   const resultsA = await db.collection('locations').find({"tags":{$regex:_search+'.*', $options:'r'}}).toArray();
-
-  console.log('locations found: ' + resultsA.length);
   
   let _ret = [];
   for( var i=0; i<resultsA.length; i++ )
   {
-    console.log('First loop start');
     let _search2 = resultsA[i].name.trim();
     const results = await db.collection('Reviews').find({"location":{$regex:_search2+'.*', $options:'r'}}).toArray();
-    console.log('Reviews found');
   
 
   for( var j=0; j<results.length; j++ )
   {
-    console.log('Seconnd loop start');
     let temp={location:results[j].location,review:results[j].review,user_id:results[j].user_id};
     _ret.push( temp );
   }
   }
-  console.log('Loops done');
   
   let ret = {results:_ret, error:error};
   res.status(200).json(ret);
@@ -569,9 +490,9 @@ app.post('/api/addReview', async (req, res, next) =>
   // incoming: userId, color
   // outgoing: error
 	
-  const { user_id, location, review } = req.body;
+  const { user_id, user_name, location, review } = req.body;
 
-  const newReview = {user_id:user_id,location:location,review:review};
+  const newReview = {user_id:user_id,user_name:user_name,location:location,review:review};
   let error = '';
 
   try

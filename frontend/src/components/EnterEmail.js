@@ -21,7 +21,6 @@ function EnterEmail()
   const doEmail = async event => 
     {
         event.preventDefault();
-        console.log(emailEntry);
         let obj = {email:emailEntry.value};
         let js = JSON.stringify(obj);
         try
