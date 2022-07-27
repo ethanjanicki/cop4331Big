@@ -66,7 +66,7 @@ const doReset = async event =>
         <form id="loginForm">
         <input type="text" className="loginText" id="loginName" placeholder="Password Reset Code" 
           ref={(c) => passCode = c} /> <br />
-        <input type="password" className="loginText" id="loginPassword" placeholder="N ewPassword" 
+        <input type="password" className="loginText" id="loginPassword" placeholder="New Password" 
           ref={(c) => newPassword = c} /> <br />
         <input type="submit" id="loginButton" className="buttons" value = "Reset Password" onClick={doReset} />
         </form>
