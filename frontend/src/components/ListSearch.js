@@ -33,7 +33,7 @@ function ListSearch()
         let js = JSON.stringify(obj);
         try
         {
-            const response = await fetch(buildPath('api/searchReviews'),
+            const response = await fetch(buildPath('api/searchtags'),
             {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
             let txt = await response.text();
             let res = JSON.parse(txt);
@@ -98,8 +98,8 @@ function ListSearch()
 
     return(
         <div id="listSearchDiv">
-            <form id="loginForm" onSubmit={doSearch}>
-            <input type="text" className="searchText" id="search" placeholder="Search Locations" ref={(c) => searchQuery = c} /> <br />
+            <form id="loginForm">
+            <input type="text" className="searchText" id="search" placeholder="Search by Single Keyword (ex: food, admin, clubs)" ref={(c) => searchQuery = c} /> <br />
             <input type="submit" id="searchButton" className="buttons" value = "Search" onClick={doSearch} />
             </form>
 

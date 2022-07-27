@@ -206,15 +206,33 @@ app.post('/api/passwordReset', async (req, res, next) =>
     let tempPass = newPass;
     let tempEmail = results[0].email;
     let tempCode = results[0].verCode;
-    let tempPassCode = results[0].passCode;
+    let tempPassCode = 10000 + Math.floor(Math.random() * (99999 - 10000));
 
     const newUser= {user_id:tempId,first_name:tempFirst,last_name:tempLast,login:tempLogin,password:tempPass,email:tempEmail,isVerified:true,verCode:tempCode,passCode:tempPassCode};
 
 
     try
     {
+      let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
       const result = db.collection('Users').deleteOne({passCode:passCode});
       const result2 = db.collection('Users').insertOne(newUser);
+      await sleep(1000);
+      const resultnew = await db.collection('Users').find({email:tempEmail}).toArray();
+      let newId = resultnew[0].user_id;
+      const resultsA = await db.collection('Reviews').find({user_id:tempId}).toArray();
+      for( var i=0; i<resultsA.length; i++ )
+      {
+        let tempRevId = resultsA[i].review_id;
+        let oldLocation = resultsA[i].location;
+        let oldReview = resultsA[i].review;
+        const resultB = db.collection('Reviews').deleteOne({review_id:tempRevId});
+        
+        const newReview = {user_id:newId,location:oldLocation,review:oldReview};
+
+        const resultC = db.collection('Reviews').insertOne(newReview);
+
+      }
+
     }
     catch(e)
     {
@@ -236,10 +254,12 @@ app.post('/api/deleteReview', async (req, res, next) =>
   let error = '';
   //const newReview = {user_id:user_id,location_id:location_id,review:review};
   const db = client.db("Review_App");
+  let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   try
   {
     
     const result = db.collection('Reviews').deleteOne({review_id:review_id});
+    await sleep(100);
   }
   catch(e)
   {
@@ -348,49 +368,6 @@ app.post('/api/registerUserNew', async (req, res, next) =>
   res.status(200).json(ret);
 });
 
-/*app.post('/api/sendemail', async (req, res, next) =>
-{
-  // incoming: first_name, last_name, login, password, email
-  // outgoing: error
-	
-  const { first_name,last_name,login,password,email } = req.body;
-
-  const newUser= {first_name:first_name,last_name:last_name,login:login,password:password,email:email};
-  let error = '';
-
-  try
-  {
-    require('dotenv').config()
-    const sgMail = require('@sendgrid/mail')
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-      const msg = {
-        to: 'kduvall011@gmail.com', // Change to your recipient
-        from: 'cop4331group18@gmail.com', // Change to your verified sender
-        subject: 'Sending with SendGrid is Fun',
-        text: 'and easy to do anywhere, even with Node.js',
-        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-      }
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log('Email sent')
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
-
-  //cardList.push( card );
-
-  let ret = { error: error };
-  res.status(200).json(ret);
-});
-*/
-
 app.post('/api/searchlocations', async (req, res, next) => 
 {
   // incoming: userId, search
@@ -410,6 +387,46 @@ app.post('/api/searchlocations', async (req, res, next) =>
   {
     _ret.push( results[i].name );
   }
+  
+  let ret = {results:_ret, error:error};
+  res.status(200).json(ret);
+});
+
+app.post('/api/searchtags', async (req, res, next) => 
+{
+  // incoming: userId, search
+  // outgoing: results[], error
+
+  let error = '';
+
+  const { search } = req.body;
+
+  let _search = search.trim();
+
+  console.log('Trimmed');
+  
+  const db = client.db("Review_App");
+  const resultsA = await db.collection('locations').find({"tags":{$regex:_search+'.*', $options:'r'}}).toArray();
+
+  console.log('locations found: ' + resultsA.length);
+  
+  let _ret = [];
+  for( var i=0; i<resultsA.length; i++ )
+  {
+    console.log('First loop start');
+    let _search2 = resultsA[i].name.trim();
+    const results = await db.collection('Reviews').find({"location":{$regex:_search2+'.*', $options:'r'}}).toArray();
+    console.log('Reviews found');
+  
+
+  for( var j=0; j<results.length; j++ )
+  {
+    console.log('Seconnd loop start');
+    let temp={location:results[j].location,review:results[j].review,user_id:results[j].user_id};
+    _ret.push( temp );
+  }
+  }
+  console.log('Loops done');
   
   let ret = {results:_ret, error:error};
   res.status(200).json(ret);
@@ -439,6 +456,8 @@ app.post('/api/searchReviews', async (req, res, next) =>
   let ret = {results:_ret, error:error};
   res.status(200).json(ret);
 });
+
+
 
 app.post('/api/searchUsers', async (req, res, next) => 
 {

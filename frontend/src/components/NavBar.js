@@ -19,9 +19,9 @@ function NavBar()
     return(
         <nav className="nav main-nav">
             <ul>
-                <li><a id="mapBar" onClick={goToMap}>List View</a></li>
-                <li><a id="listBar" onClick={goToList}>Search Locations</a></li>
-                <li><a id="profileBar" onClick={goToProfile}>Profile</a></li>
+                <li><a id="mapBar" onClick={goToMap}>Search Locations</a></li>
+                <li><a id="listBar" onClick={goToList}>Tag Search</a></li>
+                <li><a id="profileBar" onClick={goToProfile}>Profile Page</a></li>
             </ul>
         </nav>
     );

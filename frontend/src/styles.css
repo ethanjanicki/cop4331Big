@@ -141,8 +141,6 @@ h1 {
 .nav a {
     display: inline-block;
     padding: 0.5%;
-    padding-left: 12%;
-    padding-right: 12%;
     color: white;
     text-decoration: none;
     cursor: pointer;
@@ -150,6 +148,21 @@ h1 {
 
 .nav a:hover {
     background-color: rgba(255, 255, 255, .3);
+}
+
+#mapBar {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#listBar {
+    padding-left: 12.5%;
+    padding-right: 12.5%;
+}
+
+#profileBar {
+    padding-left: 12%;
+    padding-right: 12%;
 }
 
 .main-nav {
@@ -342,7 +355,7 @@ tr {
 
 #showLocationsButton {
     background: #FFCC00;
-    margin-top: 3%;
+    margin-top: 2%;
     margin-bottom: 2%;
     font-size: 200%;
 }

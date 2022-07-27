@@ -13,6 +13,7 @@ function MapScreen()
     let userId = ud.id;
     let firstName = ud.firstName;
     let lastName = ud.lastName;
+    var searchQuery;
 
     const app_name = 'cop4331-5555'
     function buildPath(route)
@@ -31,7 +32,7 @@ function MapScreen()
   {
       event.preventDefault();
       
-      let obj = {search:''};
+      let obj = {search:searchQuery.value};
       let js = JSON.stringify(obj);
       try
       {
@@ -161,6 +162,7 @@ function MapScreen()
     return(
         <div id="mapScreenDiv">
            <form id="loginForm">
+           <input type="text" className="searchText" id="search" placeholder="Search Locations" ref={(c) => searchQuery = c} /> <br />
             <input type="submit" id="showLocationsButton" className="buttons" value = "Show Locations" onClick={findLocations} />
             </form>
 
