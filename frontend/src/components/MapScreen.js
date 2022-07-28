@@ -45,9 +45,10 @@ function MapScreen()
 
           for( var i=0; i<(_results.length); i++ )
           {
-              let name = _results[i];
+              let name = _results[i].name;
+              let description = _results[i].description;
 
-              tempArray.push({name:name});
+              tempArray.push({name:name,description:description});
           }
 
           setData(tempArray);
@@ -174,7 +175,7 @@ function MapScreen()
                     return (
                         <tbody key={key}>
                         <tr className="topRowSearch">
-                        <th className="searchOverrideTop searchTableTop"><u>{val.name}</u></th>
+                        <th className="searchOverrideTop searchTableTop"><u>{val.name}</u><br></br>{val.description}</th>
                         </tr>
                         <tr className="midRowSearch">
                         <td className="searchOverrideMid searchTableTop"><input type="button" className="buttons listButtons showRevBut" value="Show Reviews" onMouseEnter={()=>setCurrentLocationName(val.name)} onClick={doSearch}></input></td>

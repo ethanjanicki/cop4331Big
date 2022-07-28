@@ -314,7 +314,7 @@ app.post('/api/searchlocations', async (req, res, next) =>
   let _ret = [];
   for( var i=0; i<results.length; i++ )
   {
-    _ret.push( results[i].name );
+    _ret.push( {name:results[i].name,description:results[i].description} );
   }
   
   let ret = {results:_ret, error:error};
